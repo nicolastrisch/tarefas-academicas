@@ -1,0 +1,59 @@
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.disciplina {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 8px 14px 16px;
+  border: 1px solid #d0d0d0;
+  border-left: 8px solid;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.dados {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nome-disciplina {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.detalhes {
+  color: #555;
+}
+
+.progresso {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #555;
+
+  mat-progress-bar {
+    margin-bottom: 4px;
+    --mat-progress-bar-active-indicator-color: var(--cor);
+  }
+}
+
+.acoes {
+  display: flex;
+  align-items: flex-start;
+}

@@ -1,0 +1,91 @@
+.pagina {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.apresentacao {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 64px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+
+  h2 {
+    max-width: 420px;
+    margin: 24px 0;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 15px;
+  }
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 22px;
+  font-weight: 500;
+
+  mat-icon {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.formulario {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 16px;
+}
+
+.cartao {
+  width: 100%;
+  max-width: 400px;
+}
+
+mat-card-content {
+  padding-top: 16px;
+}
+
+.erro {
+  color: #c62828;
+  margin: 0 0 12px;
+}
+
+@media (max-width: 768px) {
+  .pagina {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .apresentacao {
+    padding: 24px 16px;
+
+    h2 {
+      font-size: 20px;
+      margin: 12px 0 0;
+    }
+
+    ul {
+      display: none;
+    }
+  }
+}

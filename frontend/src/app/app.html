@@ -1,0 +1,43 @@
+@if (authService.estaLogado()) {
+  <mat-toolbar>
+    @if (celular) {
+      <button mat-icon-button (click)="menu.toggle()" aria-label="Abrir menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
+    <mat-icon class="logo">school</mat-icon>
+    <span>Tarefas Acadêmicas</span>
+    <span class="espaco"></span>
+    <span class="usuario">{{ authService.nome }}</span>
+    <button mat-icon-button (click)="authService.logout()" aria-label="Sair" title="Sair">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="container">
+    <mat-sidenav #menu [mode]="celular ? 'over' : 'side'" [opened]="!celular">
+      <mat-nav-list (click)="celular && menu.close()">
+        <a mat-list-item routerLink="/painel" routerLinkActive #painel="routerLinkActive" [activated]="painel.isActive">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Painel</span>
+        </a>
+        <a mat-list-item routerLink="/calendario" routerLinkActive #calendario="routerLinkActive" [activated]="calendario.isActive">
+          <mat-icon matListItemIcon>calendar_month</mat-icon>
+          <span matListItemTitle>Calendário</span>
+        </a>
+        <a mat-list-item routerLink="/disciplinas" routerLinkActive #disciplinas="routerLinkActive" [activated]="disciplinas.isActive">
+          <mat-icon matListItemIcon>menu_book</mat-icon>
+          <span matListItemTitle>Disciplinas</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <main class="conteudo">
+        <router-outlet />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+} @else {
+  <router-outlet />
+}

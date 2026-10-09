@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ dados.disciplina ? 'Editar disciplina' : 'Nova disciplina' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="salvar()">
+  <mat-dialog-content>
+    <mat-form-field class="campo-inteiro">
+      <mat-label>Nome da disciplina</mat-label>
+      <input matInput formControlName="nome" cdkFocusInitial />
+      <mat-error>Informe o nome da disciplina.</mat-error>
+    </mat-form-field>
+
+    <div class="linha">
+      <mat-form-field class="professor">
+        <mat-label>Professor</mat-label>
+        <input matInput formControlName="professor" />
+      </mat-form-field>
+
+      <mat-form-field class="semestre">
+        <mat-label>Semestre</mat-label>
+        <input matInput formControlName="semestre" placeholder="2026/2" />
+      </mat-form-field>
+    </div>
+
+    <div class="cores" role="radiogroup" aria-label="Cor da disciplina">
+      <span class="rotulo-cor">Cor</span>
+      @for (cor of cores; track cor) {
+        <button
+          type="button"
+          class="cor"
+          role="radio"
+          [attr.aria-checked]="form.value.cor === cor"
+          [attr.aria-label]="'Cor ' + cor"
+          [class.selecionada]="form.value.cor === cor"
+          [style.background-color]="cor"
+          (click)="form.controls.cor.setValue(cor)"
+        ></button>
+      }
+    </div>
+
+    @if (erro) {
+      <p class="erro">{{ erro }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancelar</button>
+    <button mat-flat-button type="submit" [disabled]="salvando">Salvar</button>
+  </mat-dialog-actions>
+</form>

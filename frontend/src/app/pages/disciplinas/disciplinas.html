@@ -1,0 +1,43 @@
+<div class="cabecalho">
+  <h1>Disciplinas</h1>
+  <button mat-flat-button (click)="abrirDialog()">
+    <mat-icon>add</mat-icon>
+    Nova disciplina
+  </button>
+</div>
+
+@if (disciplinas.length === 0) {
+  <p class="vazio">Nenhuma disciplina cadastrada. Comece adicionando as disciplinas do semestre.</p>
+} @else {
+  <div class="lista">
+    @for (disciplina of disciplinas; track disciplina.id) {
+      <div class="disciplina" [style.border-left-color]="disciplina.cor">
+        <div class="dados">
+          <span class="nome-disciplina">{{ disciplina.nome }}</span>
+          <span class="detalhes">
+            {{ disciplina.professor || 'Sem professor' }}
+            @if (disciplina.semestre) { • {{ disciplina.semestre }} }
+          </span>
+          <div class="progresso">
+            <mat-progress-bar mode="determinate" [value]="progresso(disciplina)" [style.--cor]="disciplina.cor" />
+            <span>
+              @if (disciplina.quantidadeTarefas === 0) {
+                Nenhuma tarefa
+              } @else {
+                {{ disciplina.quantidadeConcluidas }} de {{ disciplina.quantidadeTarefas }} concluídas
+              }
+            </span>
+          </div>
+        </div>
+        <div class="acoes">
+          <button mat-icon-button (click)="abrirDialog(disciplina)" title="Editar" aria-label="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="excluir(disciplina)" title="Excluir" aria-label="Excluir">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,81 @@
+<div class="cabecalho">
+  <h1>{{ primeiroDiaDoMes | date: 'MMMM yyyy' }}</h1>
+  <div>
+    <button mat-icon-button (click)="mudarMes(-1)" aria-label="Mês anterior">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-button (click)="irParaHoje()">Hoje</button>
+    <button mat-icon-button (click)="mudarMes(1)" aria-label="Próximo mês">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="grade">
+  @for (nome of diasDaSemana; track nome) {
+    <div class="dia-semana">{{ nome }}</div>
+  }
+
+  @for (dia of dias; track $index) {
+    <div
+      class="dia"
+      [class.vazio-dia]="!dia.numero"
+      [class.hoje]="dia.hoje"
+      [class.selecionado]="dia === diaSelecionado"
+      (click)="selecionar(dia)"
+    >
+      @if (dia.numero) {
+        <span class="numero">{{ dia.numero }}</span>
+        @for (tarefa of dia.tarefas; track tarefa.id) {
+          <button
+            class="tarefa"
+            [class.concluida]="tarefa.situacao === 'Concluida'"
+            [class.atrasada]="tarefa.atrasada"
+            [style.background-color]="tarefa.situacao === 'Concluida' ? null : tarefa.disciplinaCor"
+            [title]="tarefa.titulo + ' - ' + tarefa.disciplinaNome"
+            (click)="abrirTarefa(tarefa)"
+          >
+            @if (tarefa.atrasada) {
+              <mat-icon>warning</mat-icon>
+            }
+            <span class="texto">{{ tarefa.titulo }}</span>
+          </button>
+        }
+      }
+    </div>
+  }
+</div>
+
+<div class="legenda">
+  @for (disciplina of disciplinasDoMes; track disciplina.nome) {
+    <span><span class="cor" [style.background-color]="disciplina.cor"></span>{{ disciplina.nome }}</span>
+  }
+  <span><mat-icon>warning</mat-icon>Atrasada</span>
+  <span><span class="cor concluida"></span>Concluída</span>
+</div>
+
+@if (diaSelecionado) {
+  <div class="dia-detalhe">
+    <div class="dia-detalhe-cabecalho">
+      <h2>{{ diaSelecionado.data + 'T00:00' | date: "EEEE, d 'de' MMMM" }}</h2>
+      <button mat-stroked-button (click)="novaTarefaNoDia()">
+        <mat-icon>add</mat-icon>
+        Nova tarefa neste dia
+      </button>
+    </div>
+
+    @if (diaSelecionado.tarefas.length === 0) {
+      <p class="vazio">Nenhuma entrega neste dia.</p>
+    }
+
+    @for (tarefa of diaSelecionado.tarefas; track tarefa.id) {
+      <button class="item-dia" (click)="abrirTarefa(tarefa)">
+        <span class="cor" [style.background-color]="tarefa.disciplinaCor"></span>
+        <span class="item-titulo" [class.riscado]="tarefa.situacao === 'Concluida'">{{ tarefa.titulo }}</span>
+        <span class="item-info">
+          {{ tarefa.disciplinaNome }} • {{ tarefa.atrasada ? 'Atrasada' : nomesSituacao[tarefa.situacao] }}
+        </span>
+      </button>
+    }
+  </div>
+}

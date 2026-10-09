@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>{{ dados.tarefa ? 'Editar tarefa' : 'Nova tarefa' }}</h2>
+
+@if (carregouDisciplinas && disciplinas.length === 0) {
+  <mat-dialog-content>
+    <p>Para cadastrar uma tarefa, primeiro cadastre as disciplinas do semestre.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Fechar</button>
+    <button mat-flat-button type="button" (click)="irParaDisciplinas()">Cadastrar disciplinas</button>
+  </mat-dialog-actions>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <mat-dialog-content>
+      <mat-form-field class="campo-inteiro">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="titulo" placeholder="Ex.: Trabalho de Engenharia de Software" cdkFocusInitial />
+        <mat-error>Informe o título.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="campo-inteiro">
+        <mat-label>Descrição</mat-label>
+        <textarea matInput formControlName="descricao" rows="2"></textarea>
+      </mat-form-field>
+
+      <div class="linha">
+        <mat-form-field>
+          <mat-label>Disciplina</mat-label>
+          <mat-select formControlName="disciplinaId">
+            @for (disciplina of disciplinas; track disciplina.id) {
+              <mat-option [value]="disciplina.id">
+                <span class="cor-disciplina" [style.background-color]="disciplina.cor"></span>{{ disciplina.nome }}
+              </mat-option>
+            }
+          </mat-select>
+          <mat-error>Selecione a disciplina.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Tipo</mat-label>
+          <mat-select formControlName="tipo">
+            <mat-option value="Prova">Prova</mat-option>
+            <mat-option value="Trabalho">Trabalho</mat-option>
+            <mat-option value="Leitura">Leitura</mat-option>
+            <mat-option value="Forum">Fórum</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="linha">
+        <mat-form-field>
+          <mat-label>Data de entrega</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="dataEntrega" appMascaraData maxlength="10" placeholder="dd/mm/aaaa" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker" />
+          <mat-datepicker #picker />
+          @if (form.controls.dataEntrega.hasError('matDatepickerParse')) {
+            <mat-error>Data inválida.</mat-error>
+          } @else {
+            <mat-error>Informe a data de entrega.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Prioridade</mat-label>
+          <mat-select formControlName="prioridade">
+            <mat-option value="Alta">Alta</mat-option>
+            <mat-option value="Media">Média</mat-option>
+            <mat-option value="Baixa">Baixa</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Situação</mat-label>
+          <mat-select formControlName="situacao">
+            <mat-option value="NaoIniciada">Não iniciada</mat-option>
+            <mat-option value="EmAndamento">Em andamento</mat-option>
+            <mat-option value="Concluida">Concluída</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      @if (erro) {
+        <p class="erro">{{ erro }}</p>
+      }
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button type="button" mat-dialog-close>Cancelar</button>
+      <button mat-flat-button type="submit" [disabled]="salvando">Salvar</button>
+    </mat-dialog-actions>
+  </form>
+}

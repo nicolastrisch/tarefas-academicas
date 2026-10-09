@@ -1,0 +1,7 @@
+<div class="aviso">
+  <mat-icon>{{ dados.tipo === 'sucesso' ? 'check_circle' : 'error' }}</mat-icon>
+  <span class="mensagem">{{ dados.mensagem }}</span>
+  <button mat-icon-button (click)="fechar()" aria-label="Fechar aviso">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>

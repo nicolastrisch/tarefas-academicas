@@ -1,0 +1,27 @@
+mat-dialog-content {
+  padding-top: 8px !important;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+.cor-disciplina {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.erro {
+  margin: 0;
+  color: #c62828;
+}

@@ -1,0 +1,33 @@
+@api = https://localhost:7170/api
+@token = cole_o_token_aqui
+
+POST {{api}}/auth/cadastro
+Content-Type: application/json
+
+{
+  "nome": "Teste",
+  "email": "teste@email.com",
+  "senha": "123456"
+}
+
+###
+
+POST {{api}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "teste@email.com",
+  "senha": "123456"
+}
+
+###
+
+GET {{api}}/disciplinas
+Authorization: Bearer {{token}}
+
+###
+
+GET {{api}}/tarefas?prazo=7dias
+Authorization: Bearer {{token}}
+
+###

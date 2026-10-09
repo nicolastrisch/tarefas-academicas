@@ -1,0 +1,155 @@
+<div class="cabecalho">
+  <h1>{{ mostrandoConcluidas ? 'Tarefas concluídas' : 'Painel de tarefas' }}</h1>
+  <button mat-flat-button (click)="abrirTarefa()">
+    <mat-icon>add</mat-icon>
+    Nova tarefa
+  </button>
+</div>
+
+@if (primeiroAcesso) {
+  <div class="primeiros-passos">
+    <h2>Bem-vindo! Comece em dois passos:</h2>
+
+    <div class="passo" [class.feito]="disciplinas.length > 0">
+      <span class="numero-passo">
+        @if (disciplinas.length > 0) { <mat-icon>check</mat-icon> } @else { 1 }
+      </span>
+      <div class="texto-passo">
+        <strong>Cadastre as disciplinas do semestre</strong>
+        <span>Cada disciplina ganha uma cor, que aparece no painel e no calendário.</span>
+      </div>
+      <a mat-stroked-button routerLink="/disciplinas">
+        {{ disciplinas.length > 0 ? 'Ver disciplinas' : 'Cadastrar disciplinas' }}
+      </a>
+    </div>
+
+    <div class="passo">
+      <span class="numero-passo">2</span>
+      <div class="texto-passo">
+        <strong>Cadastre a primeira tarefa</strong>
+        <span>Provas, trabalhos, leituras e fóruns, com a data de entrega e a prioridade.</span>
+      </div>
+      <button mat-flat-button [disabled]="disciplinas.length === 0" (click)="abrirTarefa()">Nova tarefa</button>
+    </div>
+  </div>
+} @else {
+  @if (resumo) {
+    <div class="resumo">
+      <button class="cartao" [class.ativo]="!temFiltro()" (click)="limparFiltros()">
+        <mat-icon>pending_actions</mat-icon>
+        <span class="numero">{{ resumo.pendentes }}</span>
+        <span class="rotulo">Pendentes</span>
+      </button>
+      <button class="cartao atrasadas" [class.ativo]="filtro.prazo === 'atrasadas'" (click)="filtrarPorPrazo('atrasadas')">
+        <mat-icon>warning</mat-icon>
+        <span class="numero">{{ resumo.atrasadas }}</span>
+        <span class="rotulo">Atrasadas</span>
+      </button>
+      <button class="cartao semana" [class.ativo]="filtro.prazo === '7dias'" (click)="filtrarPorPrazo('7dias')">
+        <mat-icon>event</mat-icon>
+        <span class="numero">{{ resumo.proximosSeteDias }}</span>
+        <span class="rotulo">Vencem em 7 dias</span>
+      </button>
+      <button class="cartao concluidas" [class.ativo]="mostrandoConcluidas" (click)="filtrarConcluidas()">
+        <mat-icon>task_alt</mat-icon>
+        <span class="numero">{{ resumo.concluidas }}</span>
+        <span class="rotulo">Concluídas</span>
+      </button>
+    </div>
+  }
+
+  <div class="filtros">
+    <mat-form-field>
+      <mat-label>Disciplina</mat-label>
+      <mat-select [(ngModel)]="filtro.disciplinaId" (selectionChange)="carregar()">
+        <mat-option [value]="null">Todas</mat-option>
+        @for (disciplina of disciplinas; track disciplina.id) {
+          <mat-option [value]="disciplina.id">{{ disciplina.nome }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Prazo</mat-label>
+      <mat-select [(ngModel)]="filtro.prazo" (selectionChange)="carregar()">
+        <mat-option [value]="null">Todos</mat-option>
+        <mat-option value="atrasadas">Atrasadas</mat-option>
+        <mat-option value="7dias">Próximos 7 dias</mat-option>
+        <mat-option value="30dias">Próximos 30 dias</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Prioridade</mat-label>
+      <mat-select [(ngModel)]="filtro.prioridade" (selectionChange)="carregar()">
+        <mat-option [value]="null">Todas</mat-option>
+        <mat-option value="Alta">Alta</mat-option>
+        <mat-option value="Media">Média</mat-option>
+        <mat-option value="Baixa">Baixa</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Situação</mat-label>
+      <mat-select [(ngModel)]="filtro.situacao" (selectionChange)="carregar()">
+        <mat-option [value]="null">Todas</mat-option>
+        <mat-option value="NaoIniciada">Não iniciada</mat-option>
+        <mat-option value="EmAndamento">Em andamento</mat-option>
+        <mat-option value="Concluida">Concluída</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    @if (temFiltro()) {
+      <button mat-button (click)="limparFiltros()">Limpar filtros</button>
+    }
+  </div>
+
+  @if (!carregando && tarefas.length === 0) {
+    @if (mostrandoConcluidas) {
+      <p class="vazio">Nenhuma tarefa concluída ainda.</p>
+    } @else if (temFiltro()) {
+      <p class="vazio">Nenhuma tarefa encontrada com esses filtros.</p>
+    } @else {
+      <p class="vazio">Nenhuma tarefa pendente. Bom trabalho!</p>
+    }
+  }
+
+  @for (tarefa of tarefas; track tarefa.id) {
+    <div class="tarefa" [class.atrasada]="tarefa.atrasada" [class.proxima]="tarefa.prazoProximo"
+      [class.concluida]="tarefa.situacao === 'Concluida'">
+      <div class="dados">
+        <button class="titulo" (click)="abrirTarefa(tarefa)">{{ tarefa.titulo }}</button>
+        <div class="info">
+          <span class="prazo">{{ textoPrazo(tarefa) }}</span>
+          ({{ tarefa.dataEntrega + 'T00:00' | date: 'dd/MM' }})
+          • <span class="cor-disciplina" [style.background-color]="tarefa.disciplinaCor"></span>{{ tarefa.disciplinaNome }}
+          • {{ nomesTipo[tarefa.tipo] }}
+          • {{ nomesPrioridade[tarefa.prioridade] }}
+          @if (tarefa.situacao !== 'Concluida') {
+            • {{ nomesSituacao[tarefa.situacao] }}
+          }
+        </div>
+      </div>
+
+      <div class="acoes">
+        @if (tarefa.situacao === 'Concluida') {
+          <button mat-stroked-button (click)="alterarSituacao(tarefa, 'EmAndamento')">Reabrir</button>
+        } @else {
+          <button mat-stroked-button (click)="alterarSituacao(tarefa, 'Concluida')">Concluir</button>
+        }
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Mais opções">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          @if (tarefa.situacao === 'NaoIniciada') {
+            <button mat-menu-item (click)="alterarSituacao(tarefa, 'EmAndamento')">Marcar em andamento</button>
+          } @else if (tarefa.situacao === 'EmAndamento') {
+            <button mat-menu-item (click)="alterarSituacao(tarefa, 'NaoIniciada')">Marcar não iniciada</button>
+          }
+          <button mat-menu-item (click)="abrirTarefa(tarefa)">Editar</button>
+          <button mat-menu-item (click)="excluir(tarefa)">Excluir</button>
+        </mat-menu>
+      </div>
+    </div>
+  }
+}
